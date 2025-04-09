@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KOKYU1 - 女性健康トラッキングアプリ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #FDF7F2;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    .kokyu-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: white;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .kokyu-header {
+      background-color: white;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(211, 188, 155, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .kokyu-logo {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kokyu-logo-text {
+      color: #B89B76;
+      font-family: serif;
+      letter-spacing: 0.1em;
+      font-size: 1.25rem;
+      font-weight: 300;
+    }
+    .kokyu-status-bar {
+      background-color: #F9F1E7;
+      padding: 8px 12px;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .kokyu-status-text {
+      color: #B89B76;
+    }
+    .kokyu-date-section {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: linear-gradient(to right, #C4AA87, #B89B76);
+      color: white;
+      padding: 12px;
+    }
+    .kokyu-date-col {
+      text-align: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .kokyu-date-col:last-child {
+      border-right: none;
+    }
+    .kokyu-date {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+    .kokyu-date-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    .kokyu-date-sublabel {
+      font-size: 0.625rem;
+      letter-spacing: 0.05em;
+    }
+    .kokyu-circle {
+      width: 3.5rem;
+      height: 3.5rem;
+      background-color: white;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .kokyu-circle-text {
+      color: #B89B76;
+      font-size: 1.25rem;
+      font-weight: 300;
+    }
+    .kokyu-main {
+      padding: 12px 16px;
+    }
+    .kokyu-button {
+      display: flex;
+      width: 100%;
+      background-color: #F9F1E7;
+      color: #B89B76;
+      border-radius: 0.5rem;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      height: auto;
+      font-weight: 400;
+      justify-content: flex-start;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      border: none;
+      cursor: pointer;
+    }
+    .kokyu-button:hover {
+      background-color: #F2E8DB;
+    }
+    .kokyu-score-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #B89B76;
+    }
+    .kokyu-score-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    .kokyu-score-value {
+      font-weight: 700;
+      font-size: 1.125rem;
+    }
+    .kokyu-score-max {
+      color: rgba(184, 155, 118, 0.6);
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    .kokyu-status-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(211, 188, 155, 0.3);
+      padding-bottom: 12px;
+    }
+    .kokyu-status-item-label {
+      color: #B89B76;
+      letter-spacing: 0.05em;
+      font-size: 0.875rem;
+    }
+    .kokyu-stars {
+      display: flex;
+      gap: 4px;
+    }
+    .kokyu-star {
+      font-size: 1rem;
+    }
+    .kokyu-star-filled {
+      color: #C4AA87;
+    }
+    .kokyu-star-empty {
+      color: #E5D7C3;
+    }
+    .kokyu-actions {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .kokyu-action-button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+      padding: 8px 4px;
+      border-radius: 0.5rem;
+      background-color: #F9F1E7;
+      color: #B89B76;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      border: none;
+      cursor: pointer;
+    }
+    .kokyu-action-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: #F2E8DB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .kokyu-action-label {
+      font-size: 0.75rem;
+    }
+    .kokyu-recommendations {
+      margin-top: 32px;
+    }
+    .kokyu-recommendations-title {
+      color: #B89B76;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .kokyu-product {
+      background-color: #F9F1E7;
+      border-radius: 0.5rem;
+      padding: 12px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      margin-bottom: 12px;
+    }
+    .kokyu-product-content {
+      display: flex;
+      justify-content: space-between;
+    }
+    .kokyu-product-type {
+      font-size: 0.75rem;
+      color: rgba(184, 155, 118, 0.8);
+      background-color: white;
+      padding: 0 8px;
+      border-radius: 9999px;
+    }
+    .kokyu-product-name {
+      color: #B89B76;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    .kokyu-product-price {
+      color: #B89B76;
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+    .kokyu-product-image {
+      width: 4rem;
+      height: 4rem;
+      background-color: white;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #B89B76;
+    }
+    .kokyu-notification {
+      position: fixed;
+      bottom: 80px;
+      right: 16px;
+      left: 16px;
+      max-width: 384px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 12px;
+      z-index: 20;
+      border: 1px solid rgba(211, 188, 155, 0.3);
+    }
+    .kokyu-notification-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .kokyu-notification-icon {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      background-color: #F9F1E7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+    .kokyu-notification-icon-text {
+      color: #B89B76;
+      font-size: 1.125rem;
+    }
+    .kokyu-notification-title {
+      color: #B89B76;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .kokyu-notification-text {
+      color: #4B5563;
+      font-size: 0.75rem;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="kokyu-container">
+    <!-- ヘッダー -->
+    <header class="kokyu-header">
+      <div class="kokyu-logo">
+        <svg width="24" height="24" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M17.7576 44.6061C17.4949 44.8687 17.1818 45 16.8182 45C16.4545 45 16.1414 44.8687 15.8788 44.6061L4.39394 33.1212C4.13131 32.8586 4 32.5455 4 32.1818C4 31.8182 4.13131 31.5051 4.39394 31.2424L15.8788 19.7576C16.1414 19.4949 16.4545 19.3636 16.8182 19.3636C17.1818 19.3636 17.4949 19.4949 17.7576 19.7576C18.0202 20.0202 18.1515 20.3333 18.1515 20.697C18.1515 21.0606 18.0202 21.3737 17.7576 21.6364L7.21212 32.1818L17.7576 42.7273C18.0202 42.9899 18.1515 43.303 18.1515 43.6667C18.1515 44.0303 18.0202 44.3434 17.7576 44.6061Z" fill="#B89B76"/>
+          <path d="M30.2727 45C29.9091 45 29.596 44.8687 29.3333 44.6061C29.0707 44.3434 28.9394 44.0303 28.9394 43.6667C28.9394 43.303 29.0707 42.9899 29.3333 42.7273L39.8788 32.1818L29.3333 21.6364C29.0707 21.3737 28.9394 21.0606 28.9394 20.697C28.9394 20.3333 29.0707 20.0202 29.3333 19.7576C29.596 19.4949 29.9091 19.3636 30.2727 19.3636C30.6364 19.3636 30.9495 19.4949 31.2121 19.7576L42.697 31.2424C42.9596 31.5051 43.0909 31.8182 43.0909 32.1818C43.0909 32.5455 42.9596 32.8586 42.697 33.1212L31.2121 44.6061C30.9495 44.8687 30.6364 45 30.2727 45Z" fill="#B89B76"/>
+        </svg>
+        <div class="kokyu-logo-text">K O K Y U</div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B89B76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B89B76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B89B76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><path d="M3 6h18"></path><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+      </div>
+    </header>
+
+    <!-- ステータスバー -->
+    <div class="kokyu-status-bar">
+      <span class="kokyu-status-text">今のあなたは</span>
+      <div class="kokyu-status-text" style="display: flex; align-items: center;">
+        もやもや期(黄体後期)
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 4px;"><path d="m9 18 6-6-6-6"></path></svg>
+      </div>
+    </div>
+
+    <!-- 日付セクション -->
+    <div class="kokyu-date-section">
+      <div class="kokyu-date-col">
+        <div class="kokyu-date">4/7</div>
+        <div class="kokyu-date-label">生理予定日</div>
+        <div class="kokyu-date-sublabel">あと2日</div>
+      </div>
+      <div class="kokyu-date-col">
+        <div class="kokyu-date">11/20</div>
+        <div class="kokyu-date-label">排卵予定日</div>
+      </div>
+      <div class="kokyu-date-col">
+        <div class="kokyu-circle">
+          <span class="kokyu-circle-text">5</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="kokyu-main">
+      <button class="kokyu-button">
+        生理がきた
+      </button>
+
+      <div style="margin-top: 20px; margin-bottom: 20px;">
+        <div class="kokyu-score-header">
+          <h2 style="display: flex; align-items: center; gap: 8px;">
+            <span class="kokyu-score-label">今日の指数</span>
+            <span class="kokyu-score-value">6</span>
+            <span class="kokyu-score-max">/20点</span>
+          </h2>
+        </div>
+
+        <!-- ステータス項目 -->
+        <div style="margin-top: 20px;">
+          <div class="kokyu-status-item" style="margin-bottom: 12px;">
+            <span class="kokyu-status-item-label">カラダ</span>
+            <div class="kokyu-stars">
+              <span class="kokyu-star kokyu-star-filled">★</span>
+              <span class="kokyu-star kokyu-star-filled">★</span>
+              <span class="kokyu-star kokyu-star-filled">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+            </div>
+          </div>
+          <div class="kokyu-status-item" style="margin-bottom: 12px;">
+            <span class="kokyu-status-item-label">ココロ</span>
+            <div class="kokyu-stars">
+              <span class="kokyu-star kokyu-star-filled">★</span>
+              <span class="kokyu-star kokyu-star-filled">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+            </div>
+          </div>
+          <div class="kokyu-status-item">
+            <span class="kokyu-status-item-label">キレイ</span>
+            <div class="kokyu-stars">
+              <span class="kokyu-star kokyu-star-filled">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+              <span class="kokyu-star kokyu-star-empty">★</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- クイックアクション -->
+      <div class="kokyu-actions">
+        <button class="kokyu-action-button">
+          <div class="kokyu-action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+          </div>
+          <span class="kokyu-action-label">カレンダー</span>
+        </button>
+        <button class="kokyu-action-button">
+          <div class="kokyu-action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>
+          </div>
+          <span class="kokyu-action-label">体調記録</span>
+        </button>
+        <button class="kokyu-action-button">
+          <div class="kokyu-action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <span class="kokyu-action-label">アドバイス</span>
+        </button>
+        <button class="kokyu-action-button">
+          <div class="kokyu-action-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          </div>
+          <span class="kokyu-action-label">症状検索</span>
+        </button>
+      </div>
+
+      <!-- おすすめ商品 -->
+      <div class="kokyu-recommendations">
+        <h2 class="kokyu-recommendations-title">あなたにおすすめ</h2>
+        <div>
+          <div class="kokyu-product">
+            <div class="kokyu-product-content">
+              <div>
+                <span class="kokyu-product-type">スキンケア</span>
+                <h3 class="kokyu-product-name">KOKYU ENRICH セラムクレンジングクリーム 120g</h3>
+                <p class="kokyu-product-price">6,800円</p>
+              </div>
+              <div class="kokyu-product-image">
+                商品画像
+              </div>
+            </div>
+          </div>
+          <div class="kokyu-product">
+            <div class="kokyu-product-content">
+              <div>
+                <span class="kokyu-product-type">インナーケア</span>
+                <h3 class="kokyu-product-name">大豆Healthチップス 6個セット</h3>
+                <p class="kokyu-product-price">1,810円</p>
+              </div>
+              <div class="kokyu-product-image">
+                商品画像
+              </div>
+            </div>
+          </div>
+          <div class="kokyu-product">
+            <div class="kokyu-product-content">
+              <div>
+                <span class="kokyu-product-type">カウンセリング</span>
+                <h3 class="kokyu-product-name">【初回60分】女性の為のストレスケア・メンタルヘルスケア オンラインカウセリング</h3>
+                <p class="kokyu-product-price">4,500円</p>
+              </div>
+              <div class="kokyu-product-image">
+                商品画像
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 通知 -->
+    <div class="kokyu-notification">
+      <div class="kokyu-notification-content">
+        <div style="display: flex; gap: 8px;">
+          <div class="kokyu-notification-icon">
+            <span class="kokyu-notification-icon-text">!</span>
+          </div>
+          <div>
+            <h3 class="kokyu-notification-title">生理前のアドバイス</h3>
+            <p class="kokyu-notification-text">
+              生理前はホルモンバランスの変化で肌荒れが起きやすい時期です。保湿を重視したスキンケアを心がけましょう。
+            </p>
+          </div>
+        </div>
+        <button style="background: none; border: none; color: #B89B76; cursor: pointer;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

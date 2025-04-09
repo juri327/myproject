@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 253, 247, 242;
+  --background-end-rgb: 253, 247, 242;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .kokyu-button {
+    @apply bg-kokyu-beige hover:bg-[#F2E8DB] text-kokyu-brown rounded-lg py-3 px-4 h-auto font-normal tracking-wide text-sm shadow-sm;
+  }
+  
+  .kokyu-icon-button {
+    @apply text-kokyu-brown p-1;
+  }
+  
+  .kokyu-card {
+    @apply bg-white rounded-lg shadow-sm p-4;
+  }
+}
